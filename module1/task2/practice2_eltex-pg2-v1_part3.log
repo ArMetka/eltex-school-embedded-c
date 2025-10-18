@@ -1,20 +1,31 @@
+# 3.2
 git config --global user.name "ArMetka"
+
 git config --global user.email "artem4fight@gmail.com"
+
+# 3.3
 apt update
+
 apt install gh
+
+# 3.4
 ssh-keygen -t rsa -b 3096
+
+# 3.5
 gh auth login
 ? What account do you want to log into? GitHub.com
 ? What is your preferred protocol for Git operations on this host? SSH
 ? Upload your SSH public key to your GitHub account? /root/.ssh/id_rsa.pub
 ? Title for your SSH key: eltex-practice2-pg2-v1
 ? How would you like to authenticate GitHub CLI? Login with a web browser
-
 # ...
-
 ✓ Uploaded the SSH key to your GitHub account: /root/.ssh/id_rsa.pub
 ✓ Logged in as ArMetka
+
+# 3.6
 gh auth setup-git --hostname github.com
+
+# 3.7
 gh auth status
 github.com
   ✓ Logged in to github.com account ArMetka (/root/.config/gh/hosts.yml)
@@ -22,17 +33,28 @@ github.com
   - Git operations protocol: ssh
   - Token: gho_************************************
   - Token scopes: 'admin:public_key', 'gist', 'read:org', 'repo'
+
+# 3.8
 gh repo create --public eltex-school-embedded-c
+
+# 3.9
 mkdir eltex-school-embedded-c
+
 cd eltex-school-embedded-c
+
 echo "# Eltex School (Embedded C)" > README.md
+
 git init
+
 git add .
+
 git commit -m "init commit"
 [master (root-commit) 0d9fc2e] init commit
  1 file changed, 1 insertion(+)
  create mode 100644 README.md
+
 git remote add origin https://github.com/ArMetka/eltex-school-embedded-c.git
+
 git status
 On branch master
 nothing to commit, working tree clean
@@ -44,19 +66,27 @@ Total 3 (delta 0), reused 0 (delta 0), pack-reused 0
 To https://github.com/ArMetka/eltex-school-embedded-c.git
  * [new branch]      master -> master
 branch 'master' set up to track 'origin/master'.
+
 mkdir -p module1/task1
+
 mkdir module1/task2
+
 mkdir module1/task3
+
 # my pc -> server1
 scp -P 44556 eltex-pg2-v1_part1.pdf eltex-pg2-v1@217.71.138.1:/home/eltex-pg2-v1/eltex-pg2-v1_part1.pdf
+
 # server1 -> server2
 scp eltex-pg2-v1_part* root@172.16.9.201:/root/eltex-school-embedded-c/module1/task1/
+
 # server2 -> server2
 cp ../practice2_eltex-pg2-v1_part{1,2}.log module1/task2/
+
+git add .
+
 git status
 On branch master
 Your branch is up to date with 'origin/master'.
-
 Changes to be committed:
   (use "git restore --staged <file>..." to unstage)
 	new file:   module1/task1/eltex-pg2-v1_part1.pdf
@@ -86,11 +116,14 @@ Total 11 (delta 0), reused 0 (delta 0), pack-reused 0
 To https://github.com/ArMetka/eltex-school-embedded-c.git
    0d9fc2e..1cae07f  master -> master
 
+# 3.10
 cd ..
+
 mkdir eltex-school-embedded-c_clone
+
 cd eltex-school-embedded-c_clone
 
-git clone https://github.com/ArMetka/eltex-school-embedded-c.git
+git clone https://github.com/ArMetka/eltex-school-embedded-c.git .
 Cloning into 'eltex-school-embedded-c'...
 remote: Enumerating objects: 14, done.
 remote: Counting objects: 100% (14/14), done.
@@ -98,4 +131,61 @@ remote: Compressing objects: 100% (12/12), done.
 remote: Total 14 (delta 0), reused 14 (delta 0), pack-reused 0 (from 0)
 Receiving objects: 100% (14/14), 792.55 KiB | 1.80 MiB/s, done.
 
+# 3.11
 cd ../eltex-school-embedded-c
+
+cp ../practice2_eltex-pg2-v1_part3.log module1/task2/
+
+git add .
+
+git commit -m "task2 part3"
+
+git push
+
+cd ../eltex-school-embedded-c_clone/
+
+git fetch
+remote: Enumerating objects: 8, done.
+remote: Counting objects: 100% (8/8), done.
+remote: Compressing objects: 100% (4/4), done.
+remote: Total 5 (delta 1), reused 5 (delta 1), pack-reused 0 (from 0)
+Unpacking objects: 100% (5/5), 1.68 KiB | 1.68 MiB/s, done.
+From https://github.com/ArMetka/eltex-school-embedded-c
+   1cae07f..fefc88d  master     -> origin/master
+
+git log origin/master
+commit fefc88d0c5601367de52421baa1848d49a63098b (origin/master, origin/HEAD)
+Author: ArMetka <artem4fight@gmail.com>
+Date:   Sat Oct 18 13:54:57 2025 +0000
+    task 2 part 3
+commit 1cae07f08a3550a1e0bbadf10e6530410fdc4459 (HEAD -> master)
+Author: ArMetka <artem4fight@gmail.com>
+Date:   Sat Oct 18 13:44:29 2025 +0000
+    module1 tasks 1-2
+commit 0d9fc2e96a09007e5236252709b75548a07a1ef3
+Author: ArMetka <artem4fight@gmail.com>
+Date:   Sat Oct 18 13:15:50 2025 +0000
+    init commit
+
+git diff master origin/master
+diff --git a/module1/task2/practice2_eltex-pg2-v1_part3.log b/module1/task2/practice2_eltex-pg2-v1_part3.log
+new file mode 100644
+index 0000000..b25913b
+--- /dev/null
++++ b/module1/task2/practice2_eltex-pg2-v1_part3.log
+@@ -0,0 +1,101 @@
++git config --global user.name "ArMetka"
++git config --global user.email "artem4fight@gmail.com"
++apt update
++apt install gh
+# ...
+
+git merge
+Updating 1cae07f..fefc88d
+Fast-forward
+ module1/task2/practice2_eltex-pg2-v1_part3.log | 101 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 101 insertions(+)
+ create mode 100644 module1/task2/practice2_eltex-pg2-v1_part3.log
+
+# 3.12
+# Было сделано в п.3.9
