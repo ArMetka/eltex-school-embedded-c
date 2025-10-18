@@ -1,34 +1,111 @@
+# 3.1
 touch "$USER"_part3.log
+
+# 3.2
 mkdir -p D1/D2/D3
+
+# 3.3
 touch D1/D2/file.txt
+
+# 3.4
 echo "sample text for my file $(date)" > D1/D2/file.txt
+
 cat D1/D2/file.txt
 sample text for my file Wed Oct 15 01:36:49 PM +07 2025
+
+# 3.5
 ln -s D1/D2/file.txt D1/D2/D3/file-soft.txt
+
 ln D1/D2/file.txt D1/D2/D3/file-hard.txt
+
+# 3.6
 stat D1/D2/D3/file-soft.txt
-File: D1/D2/D3/file-soft.txt -> D1/D2/file.txt Size: 14 Blocks: 0 IO Block: 4096 symbolic link Device: 254,2 Inode: 393255 Links: 1 Access: (0777/lrwxrwxrwx) Uid: ( 1092/eltex-pg2-v1) Gid: ( 1092/eltex-pg2-v1) Access: 2025-10-15 13:43:55.113038124 +0700 Modify: 2025-10-15 13:43:35.160675330 +0700 Change: 2025-10-15 13:43:35.160675330 +0700 Birth: 2025-10-15 13:43:35.160675330 +0700
+File: D1/D2/D3/file-soft.txt -> D1/D2/file.txt
+Size: 14 Blocks: 0 IO Block: 4096 symbolic link
+Device: 254,2 Inode: 393255 Links: 1
+Access: (0777/lrwxrwxrwx) Uid: ( 1092/eltex-pg2-v1) Gid: ( 1092/eltex-pg2-v1)
+Access: 2025-10-15 13:43:55.113038124 +0700
+Modify: 2025-10-15 13:43:35.160675330 +0700
+Change: 2025-10-15 13:43:35.160675330 +0700
+Birth: 2025-10-15 13:43:35.160675330 +0700
+
 stat D1/D2/D3/file-hard.txt
-File: D1/D2/D3/file-hard.txt Size: 56 Blocks: 8 IO Block: 4096 regular file Device: 254,2 Inode: 393356 Links: 2 Access: (0644/-rw-r--r--) Uid: ( 1092/eltex-pg2-v1) Gid: ( 1092/eltex-pg2-v1) Access: 2025-10-15 13:37:50.674284882 +0700 Modify: 2025-10-15 13:36:49.645119810 +0700 Change: 2025-10-15 13:43:45.920871063 +0700 Birth: 2025-10-15 13:33:23.201070059 +0700
+File: D1/D2/D3/file-hard.txt
+Size: 56 Blocks: 8 IO Block: 4096 regular file
+Device: 254,2 Inode: 393356 Links: 2
+Access: (0644/-rw-r--r--) Uid: ( 1092/eltex-pg2-v1) Gid: ( 1092/eltex-pg2-v1)
+Access: 2025-10-15 13:37:50.674284882 +0700
+Modify: 2025-10-15 13:36:49.645119810 +0700
+Change: 2025-10-15 13:43:45.920871063 +0700
+Birth: 2025-10-15 13:33:23.201070059 +0700
+
 stat D1/D2/file.txt
-File: D1/D2/file.txt Size: 56 Blocks: 8 IO Block: 4096 regular file Device: 254,2 Inode: 393356 Links: 2 Access: (0644/-rw-r--r--) Uid: ( 1092/eltex-pg2-v1) Gid: ( 1092/eltex-pg2-v1) Access: 2025-10-15 13:37:50.674284882 +0700 Modify: 2025-10-15 13:36:49.645119810 +0700 Change: 2025-10-15 13:43:45.920871063 +0700 Birth: 2025-10-15 13:33:23.201070059 +0700
+File: D1/D2/file.txt
+Size: 56 Blocks: 8 IO Block: 4096 regular file
+Device: 254,2 Inode: 393356 Links: 2
+Access: (0644/-rw-r--r--) Uid: ( 1092/eltex-pg2-v1) Gid: ( 1092/eltex-pg2-v1)
+Access: 2025-10-15 13:37:50.674284882 +0700
+Modify: 2025-10-15 13:36:49.645119810 +0700
+Change: 2025-10-15 13:43:45.920871063 +0700
+Birth: 2025-10-15 13:33:23.201070059 +0700
+
 # Inode D1/D2/file.txt == Inode D1/D2/D3/file-hard.txt != Inode D1/D2/D3/file-soft.txt
+
+# 3.7
 mv D1/D2/file.txt D1/
+
+# 3.8
 cat D1/D2/D3/file-hard.txt
 sample text for my file Wed Oct 15 01:36:49 PM +07 2025
+
 cat D1/D2/D3/file-soft.txt
 cat: D1/D2/D3/file-soft.txt: No such file or directory
+
 # Жесткая ссылка (D1/D2/D3/file-hard.txt) работает, так как ссылается на тот же Inode, что и изначальный файл
 # Мягкая ссылка (D1/D2/D3/file-soft.txt) не работает, так как ссылается на изначальный файл, а он был перемещен
+
+# 3.9
 rm -rf D1/D2
+
+# 3.10
 find / -size +20M -not -path "/proc/*" 2>/dev/null | xargs du -h
-31M /usr/bin/x86_64-linux-gnu-lto-dump-12 31M /usr/lib/gcc/x86_64-linux-gnu/12/lto1 32M /usr/lib/gcc/x86_64-linux-gnu/12/cc1 30M /usr/lib/x86_64-linux-gnu/libicudata.so.72.1 33M /boot/initrd.img-6.1.0-31-amd64 33M /boot/initrd.img-6.1.0-32-amd64 33M /boot/initrd.img-6.1.0-40-amd64 38M /var/cache/apt/srcpkgcache.bin 38M /var/cache/apt/pkgcache.bin 48M /var/lib/apt/lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages 49M /var/lib/apt/lists/deb.debian.org_debian_dists_bookworm_main_source_Sources 32M /var/lib/apt/lists/deb.debian.org_debian_dists_bookworm_main_i18n_Translation-en
+31M /usr/bin/x86_64-linux-gnu-lto-dump-12
+31M /usr/lib/gcc/x86_64-linux-gnu/12/lto1
+32M /usr/lib/gcc/x86_64-linux-gnu/12/cc1
+30M /usr/lib/x86_64-linux-gnu/libicudata.so.72.1
+33M /boot/initrd.img-6.1.0-31-amd64
+33M /boot/initrd.img-6.1.0-32-amd64
+33M /boot/initrd.img-6.1.0-40-amd64
+38M /var/cache/apt/srcpkgcache.bin
+38M /var/cache/apt/pkgcache.bin
+48M /var/lib/apt/lists/deb.debian.org_debian_dists_bookworm_main_binary-amd64_Packages
+49M /var/lib/apt/lists/deb.debian.org_debian_dists_bookworm_main_source_Sources
+32M /var/lib/apt/lists/deb.debian.org_debian_dists_bookworm_main_i18n_Translation-en
+
 find / -size +20M -not -path "/proc/*" 2>/dev/null > "$USER"_part3_gt20M.log
+
+# 3.11
 find ~ -type f -newermt "-24 hours"
-/home/eltex-pg2-v1/.viminfo /home/eltex-pg2-v1/.config/htop/htoprc /home/eltex-pg2-v1/.lesshst /home/eltex-pg2-v1/D1/file.txt /home/eltex-pg2-v1/eltex-pg2-v1_part2.log /home/eltex-pg2-v1/.bash_history /home/eltex-pg2-v1/.bashrc /home/eltex-pg2-v1/eltex-pg2-v1_part3_gt20M.log /home/eltex-pg2-v1/eltex-pg2-v1_part3.log
+/home/eltex-pg2-v1/.viminfo
+/home/eltex-pg2-v1/.config/htop/htoprc
+/home/eltex-pg2-v1/.lesshst
+/home/eltex-pg2-v1/D1/file.txt
+/home/eltex-pg2-v1/eltex-pg2-v1_part2.log
+/home/eltex-pg2-v1/.bash_history
+/home/eltex-pg2-v1/.bashrc
+/home/eltex-pg2-v1/eltex-pg2-v1_part3_gt20M.log
+/home/eltex-pg2-v1/eltex-pg2-v1_part3.log
+
+# 3.13
 which find
 /usr/bin/find
+
+# 3.14
 file /usr/bin/find
 /usr/bin/find: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=5545a6c7162d325fbe5ffabcbfe4e5521b66ce70, for GNU/Linux 3.2.0, stripped
+
+# 3.15
 file /boot/initrd.img*
-/boot/initrd.img-6.1.0-31-amd64: ASCII cpio archive (SVR4 with no CRC) /boot/initrd.img-6.1.0-32-amd64: ASCII cpio archive (SVR4 with no CRC) /boot/initrd.img-6.1.0-40-amd64: ASCII cpio archive (SVR4 with no CRC)
+/boot/initrd.img-6.1.0-31-amd64: ASCII cpio archive (SVR4 with no CRC)
+/boot/initrd.img-6.1.0-32-amd64: ASCII cpio archive (SVR4 with no CRC)
+/boot/initrd.img-6.1.0-40-amd64: ASCII cpio archive (SVR4 with no CRC)
