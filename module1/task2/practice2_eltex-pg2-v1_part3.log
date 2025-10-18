@@ -1,0 +1,101 @@
+git config --global user.name "ArMetka"
+git config --global user.email "artem4fight@gmail.com"
+apt update
+apt install gh
+ssh-keygen -t rsa -b 3096
+gh auth login
+? What account do you want to log into? GitHub.com
+? What is your preferred protocol for Git operations on this host? SSH
+? Upload your SSH public key to your GitHub account? /root/.ssh/id_rsa.pub
+? Title for your SSH key: eltex-practice2-pg2-v1
+? How would you like to authenticate GitHub CLI? Login with a web browser
+
+# ...
+
+✓ Uploaded the SSH key to your GitHub account: /root/.ssh/id_rsa.pub
+✓ Logged in as ArMetka
+gh auth setup-git --hostname github.com
+gh auth status
+github.com
+  ✓ Logged in to github.com account ArMetka (/root/.config/gh/hosts.yml)
+  - Active account: true
+  - Git operations protocol: ssh
+  - Token: gho_************************************
+  - Token scopes: 'admin:public_key', 'gist', 'read:org', 'repo'
+gh repo create --public eltex-school-embedded-c
+mkdir eltex-school-embedded-c
+cd eltex-school-embedded-c
+echo "# Eltex School (Embedded C)" > README.md
+git init
+git add .
+git commit -m "init commit"
+[master (root-commit) 0d9fc2e] init commit
+ 1 file changed, 1 insertion(+)
+ create mode 100644 README.md
+git remote add origin https://github.com/ArMetka/eltex-school-embedded-c.git
+git status
+On branch master
+nothing to commit, working tree clean
+git push -u origin master
+Enumerating objects: 3, done.
+Counting objects: 100% (3/3), done.
+Writing objects: 100% (3/3), 239 bytes | 239.00 KiB/s, done.
+Total 3 (delta 0), reused 0 (delta 0), pack-reused 0
+To https://github.com/ArMetka/eltex-school-embedded-c.git
+ * [new branch]      master -> master
+branch 'master' set up to track 'origin/master'.
+mkdir -p module1/task1
+mkdir module1/task2
+mkdir module1/task3
+# my pc -> server1
+scp -P 44556 eltex-pg2-v1_part1.pdf eltex-pg2-v1@217.71.138.1:/home/eltex-pg2-v1/eltex-pg2-v1_part1.pdf
+# server1 -> server2
+scp eltex-pg2-v1_part* root@172.16.9.201:/root/eltex-school-embedded-c/module1/task1/
+# server2 -> server2
+cp ../practice2_eltex-pg2-v1_part{1,2}.log module1/task2/
+git status
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+	new file:   module1/task1/eltex-pg2-v1_part1.pdf
+	new file:   module1/task1/eltex-pg2-v1_part2.log
+	new file:   module1/task1/eltex-pg2-v1_part3.log
+	new file:   module1/task1/eltex-pg2-v1_part3_gt20M.log
+	new file:   module1/task2/practice2_eltex-pg2-v1_part1.log
+	new file:   module1/task2/practice2_eltex-pg2-v1_part2.log
+
+git commit -m "module1 tasks 1-2"
+[master 1cae07f] module1 tasks 1-2
+ 6 files changed, 412 insertions(+)
+ create mode 100644 module1/task1/eltex-pg2-v1_part1.pdf
+ create mode 100644 module1/task1/eltex-pg2-v1_part2.log
+ create mode 100644 module1/task1/eltex-pg2-v1_part3.log
+ create mode 100644 module1/task1/eltex-pg2-v1_part3_gt20M.log
+ create mode 100644 module1/task2/practice2_eltex-pg2-v1_part1.log
+ create mode 100644 module1/task2/practice2_eltex-pg2-v1_part2.log
+
+git push
+Enumerating objects: 12, done.
+Counting objects: 100% (12/12), done.
+Delta compression using up to 2 threads
+Compressing objects: 100% (11/11), done.
+Writing objects: 100% (11/11), 792.35 KiB | 37.73 MiB/s, done.
+Total 11 (delta 0), reused 0 (delta 0), pack-reused 0
+To https://github.com/ArMetka/eltex-school-embedded-c.git
+   0d9fc2e..1cae07f  master -> master
+
+cd ..
+mkdir eltex-school-embedded-c_clone
+cd eltex-school-embedded-c_clone
+
+git clone https://github.com/ArMetka/eltex-school-embedded-c.git
+Cloning into 'eltex-school-embedded-c'...
+remote: Enumerating objects: 14, done.
+remote: Counting objects: 100% (14/14), done.
+remote: Compressing objects: 100% (12/12), done.
+remote: Total 14 (delta 0), reused 14 (delta 0), pack-reused 0 (from 0)
+Receiving objects: 100% (14/14), 792.55 KiB | 1.80 MiB/s, done.
+
+cd ../eltex-school-embedded-c
