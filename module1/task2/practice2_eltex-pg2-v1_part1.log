@@ -1,22 +1,32 @@
-# @eltex-practice2-pg2-v1 (server for 2nd practice)
-MYUSER="eltex-pg2-v1"
-touch practice2_"$MYUSER"_part1.log
-# @eltex-2025-autumn (server for 1st practice)
+# @eltex-2025-autumn (1st server)
+# 1.1
 ssh-keygen -t rsa -b 3096
+
+# 1.2
 ssh-copy-id root@172.16.9.201
+
+# 1.3
 cat ~/.ssh/id_rsa.pub
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABhACwYlTxOLU2huFfeFNtXdKHrQcmidJKInVHDwCWpHEM3kWVLcxxyfOtL2MZXQoPKqOsJr1RqeSB26uat4Nrhi+hHsGSc2RF0ptfmzmtuE8LXHG7KGqyqZllgJmyTS/QE2fBqTT5xNMJ/SMGlAppOnWIweJqh8AyJdgY4gnD52VB7j378VuwaF13W/4b98zcRXBQ1mdkuRyfeJDBukUGX7d8MN1bYQO8/p45doMAPchfo+FqkeruUWoxI3A3IvAeOzCyeRPLjOYUROlhsXd/IsJVN1SwI8WLa9dQNWRGcEeeFY5l5IYd3mAW7sFfmBL6hkBGDyhwhwVhBH63gmFYr60El3wkUVcY4M6ehpjdOxgmFY4VlWQN7Xw0E3dGbbPQ0tU0BAZWPwfHySmUO1+XAA3n1EVcLMU0J815lsUKqji7bw7i/QWk9b8+TTjZNMBFuJJuL1iwkHYOkXiVlIO41UQ5ZX7jLP/niZLHWZYJ2FzYO317KhZr7ep0ojdSmT6qtFwSueE= eltex-pg2-v1@eltex-2025-autumn
+
 stat ~/.ssh/id_rsa.pub | grep Access -m 1
 Access: (0644/-rw-r--r--)  Uid: ( 1092/eltex-pg2-v1)   Gid: ( 1092/eltex-pg2-v1)
-# @eltex-practice2-pg2-v1
+
+# @eltex-practice2-pg2-v1 (2nd server)
 cat ~/.ssh/authorized_keys
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABhACwYlTxOLU2huFfeFNtXdKHrQcmidJKInVHDwCWpHEM3kWVLcxxyfOtL2MZXQoPKqOsJr1RqeSB26uat4Nrhi+hHsGSc2RF0ptfmzmtuE8LXHG7KGqyqZllgJmyTS/QE2fBqTT5xNMJ/SMGlAppOnWIweJqh8AyJdgY4gnD52VB7j378VuwaF13W/4b98zcRXBQ1mdkuRyfeJDBukUGX7d8MN1bYQO8/p45doMAPchfo+FqkeruUWoxI3A3IvAeOzCyeRPLjOYUROlhsXd/IsJVN1SwI8WLa9dQNWRGcEeeFY5l5IYd3mAW7sFfmBL6hkBGDyhwhwVhBH63gmFYr60El3wkUVcY4M6ehpjdOxgmFY4VlWQN7Xw0E3dGbbPQ0tU0BAZWPwfHySmUO1+XAA3n1EVcLMU0J815lsUKqji7bw7i/QWk9b8+TTjZNMBFuJJuL1iwkHYOkXiVlIO41UQ5ZX7jLP/niZLHWZYJ2FzYO317KhZr7ep0ojdSmT6qtFwSueE= eltex-pg2-v1@eltex-2025-autumn
+
 stat ~/.ssh/authorized_keys | grep Access -m 1
 Access: (0600/-rw-------)  Uid: (    0/    root)   Gid: (    0/    root)
+
 # id_rsa.pub (1st server) == authorized_keys (2nd server)
 # Права доступа отличаются, публичный ключ (id_rsa.pub) доступен для чтения всем, при этом
 # доступ к авторизованым ключам (authorized_keys) есть только у владельца (root)
+
+# 1.4
 useradd -s /bin/bash -m user1 -p pass1
+
+# 1.5
 adduser user2
 info: Adding user `user2' ...
 info: Selecting UID/GID from range 1000 to 59999 ...
@@ -37,6 +47,7 @@ Enter the new value, or press ENTER for the default
 Is the information correct? [Y/n] y
 info: Adding new user `user2' to supplemental / extra groups `users' ...
 info: Adding user `user2' to group `users' ...
+
 adduser user3
 info: Adding user `user3' ...
 info: Selecting UID/GID from range 1000 to 59999 ...
@@ -57,38 +68,70 @@ Enter the new value, or press ENTER for the default
 Is the information correct? [Y/n] y
 info: Adding new user `user3' to supplemental / extra groups `users' ...
 info: Adding user `user3' to group `users' ...
+
+# 1.6
 usermod -s /usr/sbin/nologin user3
+
 su user3
 This account is currently not available.
+
 su -s /bin/bash user3
 user3@eltex-practice2-pg2-v1:/root$ 
+
 logout
 bash: logout: not login shell: use `exit'
+
 exit
+
+# 1.7
 groupadd group123
+
 usermod -aG group123 user1
+
 usermod -aG group123 user2
+
 usermod -aG group123 user3
+
 groups user{1..3}
 user1 : user1 group123
 user2 : user2 users group123
 user3 : user3 users group123
+
+# 1.9
 mkdir /opt/share
+
 chown :group123 /opt/share
+
 chmod g+s /opt/share
+
 chmod g+rwx /opt/share
+
+# 1.10
 su user1
+
 umask ug=rwx,o=
+
 echo 'umask ug=rwx,o=' >> ~/.bashrc
+
+# 1.11
 cd /opt/share
+
 touch file_user1
+
 exit
+
 su user2
+
 touch file_user2
+
 exit
+
 su user3 -s /bin/bash
+
 touch file_user3
+
 exit
+
 ll
 total 8
 drwxrwsr-x 2 root group123 4096 Oct 17 05:09 ./
@@ -96,29 +139,54 @@ drwxr-xr-x 3 root root 4096 Oct 16 17:56 ../
 -rw-rw---- 1 user1 group123 0 Oct 17 05:08 file_user1
 -rw-rw-r-- 1 user2 group123 0 Oct 17 05:08 file_user2
 -rw-rw-r-- 1 user3 group123 0 Oct 17 05:09 file_user3
+
 su user1
-rm file_user2 # success
+
+rm file_user2
+# success
+
 exit
+
 su user2
-rm file_user3 # success
+
+rm file_user3
+# success
+
 exit
+
 su user3 -s /bin/bash
-rm file_user1 # success
+
+rm file_user1
+# success
+
 exit
+
 ll
 total 8
 drwxrwsr-x 2 root group123 4096 Oct 17 05:42 ./
 drwxr-xr-x 3 root root 4096 Oct 16 17:56 ../
+
+# 1.12
 chmod +t /opt/share
+
 su user1
+
 touch file_user1
+
 exit
+
 su user2
+
 touch file_user2
+
 exit
+
 su user3 -s /bin/bash
+
 touch file_user3
+
 exit
+
 ll
 total 8
 drwxrwsr-t 2 root group123 4096 Oct 17 05:52 ./
@@ -126,63 +194,112 @@ drwxr-xr-x 3 root root 4096 Oct 16 17:56 ../
 -rw-rw---- 1 user1 group123 0 Oct 17 05:52 file_user1
 -rw-rw-r-- 1 user2 group123 0 Oct 17 05:52 file_user2
 -rw-rw-r-- 1 user3 group123 0 Oct 17 05:52 file_user3
+
 su user1
+
 rm file_user2
 rm: cannot remove 'file_user2': Operation not permitted
+
+exit
+
+# 1.13
 echo 'user1 ALL=(root) /usr/bin/dmesg' >> /etc/sudoers
+
 # Тут выяснилось что при использовании useradd пароль должен быть уже хеширован, иначе будет это:
 cat /etc/shadow | grep -e user1 -e user2 -e user3
 user1:pass1:20377:0:99999:7:::
 user2:$y$j9T$mvB2JYkQehVO1TSHInCKn/$YaRboHS98gKidV9J.PW88iwpw/7SzikYqCHWku6v2C9:20377:0:99999:7:::
 user3:$y$j9T$4TMvaJni3l9tcoSIWM1aK1$JSnFMHEixLhoxvRsVBZH7sV7YPeRZo0j.s2VKaozBp.:20377:0:99999:7:::
+
 # Меняем пароль
 passwd user1
 New password: # pass1
 Retype new password: # pass1
 passwd: password updated successfully
+
 su user1
+
 sudo dmesg | head -n 3
 [sudo] password for user1: # pass1
 [    0.000000] Linux version 6.8.0-55-generic (buildd@lcy02-amd64-095) (x86_64-linux-gnu-gcc-13 (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0, GNU ld (GNU Binutils for Ubuntu) 2.42) #57-Ubuntu SMP PREEMPT_DYNAMIC Wed Feb 12 23:42:21 UTC 2025 (Ubuntu 6.8.0-55.57-generic 6.8.12)
 [    0.000000] Command line: BOOT_IMAGE=/vmlinuz-6.8.0-55-generic root=/dev/mapper/ubuntu--vg-ubuntu--lv ro
 [    0.000000] KERNEL supported cpus:
+
 sudo vim # Команды кроме dmesg не работают
 Sorry, user user1 is not allowed to execute '/usr/bin/vim' as root on eltex-practice2-pg2-v1.
+
 exit
+
 touch /home/user2/dmesg_script.sh
+
 echo 'dmesg' >> /home/user2/dmesg_script.sh
+
 chmod +x /home/user2/dmesg_script.sh 
+
 chmod u+s /home/user2/dmesg_script.sh
-sudo user2
+
+su user2
+
 ~/dmesg_script.sh 
 dmesg: read kernel buffer failed: Operation not permitted
+
 # SUID не работает для скриптов (https://unix.stackexchange.com/questions/364/allow-setuid-on-shell-scripts/2910#2910)
+# Можно сделать обертку через си, но в 1 модуле си пока не существует
+
+# 1.14
 chage -M 10 user1
+
 chage -M 10 user2
+
 chage -M 10 user3
+
+# 1.15
 echo 'Артём Миронов' > /etc/motd
+
+# 1.16
 rsync -a /etc /root/etc_backup
+
+# 1.17
 tar -czf etc_backup.tar.gz etc_backup/
+
 # bzip2 надо сначала установить
 apt install bzip2
+
 tar -cjf etc_backup.tar.bz2 etc_backup/
+
 # 7zip надо сначала установить
 apt install 7zip
+
 tar cf - etc_backup/ | 7z a -si etc_backup.tar.7z
+
 du -h etc_backup.tar*
 476K etc_backup.tar.7z
 556K etc_backup.tar.bz2
 584K etc_backup.tar.gz
+
+# 1.18
 echo $(date) >> /etc/motd
+
 rsync -a /etc /root/etc_backup
+
 tar -czf etc_backup.tar.gz etc_backup/
+
+# 1.19
 mkdir etc_backup_bzip2
+
 tar -xf etc_backup.tar.bz2 -C etc_backup_bzip2
+
 diff -rq etc_backup_bzip2/etc_backup/etc /root/etc_backup
 Files etc_backup_bzip2/etc_backup/etc/motd and /root/etc_backup/etc/motd differ
+
+# 1.20
 mkdir etc_backup_gzip
+
 tar -xf etc_backup.tar.gz -C etc_backup_gzip/
+
 mkdir etc_backup_7zip
+
 7z x etc_backup.tar.7z -oetc_backup_7zip/ && tar -xf etc_backup_7zip/etc_backup.tar -C etc_backup_7zip/
+
 diff etc_backup_gzip/etc_backup/etc/motd etc_backup_7zip/etc_backup/etc/motd
 2d1 < Fri Oct 17 11:29:31 AM UTC 2025 # Файлы отличаются
