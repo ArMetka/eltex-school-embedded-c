@@ -1,41 +1,102 @@
+# 2.1
 screen -ls
 No Sockets found in /run/screen/S-eltex-pg2-v1.
+
 screen -S $(whoami)_part2
+
 touch "$USER"_part2.log
+
+# 2.2
 ls # tab tab
 ls           lsb_release  lsinitramfs  lslocks      lsmod        lspci        
 lsattr       lscpu        lsipc        lslogins     lsns         lsusb        
 lsblk        lsfd         lsirq        lsmem        lsof
+
+# 2.3
 $HIST # tab tab
 $HISTCMD       $HISTCONTROL   $HISTFILE      $HISTFILESIZE  $HISTSIZE
+
+# 2.4
 echo $HISTFILESIZE
 2000
+
+# 2.5
 find ~ -name ".*"
-/home/eltex-pg2-v1/.viminfo /home/eltex-pg2-v1/.config /home/eltex-pg2-v1/.profile /home/eltex-pg2-v1/.lesshst /home/eltex-pg2-v1/.bash_logout /home/eltex-pg2-v1/.log /home/eltex-pg2-v1/.bash_history /home/eltex-pg2-v1/.bashrc
+/home/eltex-pg2-v1/.viminfo
+/home/eltex-pg2-v1/.config
+/home/eltex-pg2-v1/.profile
+/home/eltex-pg2-v1/.lesshst
+/home/eltex-pg2-v1/.bash_logout
+/home/eltex-pg2-v1/.log
+/home/eltex-pg2-v1/.bash_history
+/home/eltex-pg2-v1/.bashrc
+
+# 2.6
 export HISTTIMEFORMAT="%F %T "
+
 echo 'export HISTTIMEFORMAT="%F %T "' >> .bashrc
+
+# 2.7
 date
 Tue Oct 14 11:33:12 PM +07 2025
+
 history 3
-281 2025-10-14 23:35:40 cat eltex-pg2-v1_part2.log 282 2025-10-14 23:35:42 date 283 2025-10-14 23:35:53 echo $(history 3) >> eltex-pg2-v1_part2.log
+281 2025-10-14 23:35:40 cat eltex-pg2-v1_part2.log
+282 2025-10-14 23:35:42 date
+283 2025-10-14 23:35:53 echo $(history 3) >> eltex-pg2-v1_part2.log
+
 cat .bash_history | tail -n 3
-lsmem ll ls -la
+lsmem
+ll
+ls -la
+
 export PROMPT_COMMAND="history -a"
+
 cat .bash_history | tail -n 3
-cat .bash_history | tail -n 3 #1760460231 echo 'cat .bash_history | tail -n 3' >> eltex-pg2-v1_part2.log
+cat .bash_history | tail -n 3
+#1760460231
+echo 'cat .bash_history | tail -n 3' >> eltex-pg2-v1_part2.log
+
+# 2.10
 DATE=$(date +"%F")
+
 echo $DATE
 2025-10-14
+
+# 2.11
 TIME=$(date +"%T")
+
 echo $TIME
 23:49:50
+
+# 2.12
 DATE_TIME="$DATE $TIME"
+
 echo $DATE_TIME
 2025-10-14 23:49:50
+
+# 2.13
 find /bin/ /sbin/ -maxdepth 1 -type f -name "*[0-9]*"
-/bin/pod2html /bin/python3.11 /bin/ssh-argv0 /bin/c99-gcc /bin/x86_64-linux-gnu-gcc-ar-12 /bin/base64 /bin/x86_64-linux-gnu-gcc-ranlib-12 /bin/enc2xs /bin/x86_64-linux-gnu-gcov-12 /bin/pod2usage /bin/x86_64-linux-gnu-objdump /bin/sha224sum /bin/x86_64-linux-gnu-objcopy /bin/bzip2 /bin/x86_64-linux-gnu-readelf /bin/x86_64-linux-gnu-ar /bin/grub-mkpasswd-pbkdf2 /bin/md5sum /bin/bzip2recover /bin/grub-menulst2cfg /bin/x86_64-linux-gnu-cpp-12 /bin/x86_64-linux-gnu-size /bin/x86_64-linux-gnu-gprofng /bin/x86_64-linux-gnu-gprof /bin/h2xs /bin/x86_64-linux-gnu-ranlib /bin/x86_64-linux-gnu-ld.gold /bin/x86_64-linux-gnu-as /bin/pod2text /bin/x86_64-linux-gnu-nm /bin/x86_64-linux-gnu-elfedit /bin/x86_64-linux-gnu-strip /bin/x86_64-linux-gnu-gcc-nm-12 /bin/perl5.36.0 /bin/x86_64-linux-gnu-ld.bfd /bin/pydoc3.11 /bin/x86_64-linux-gnu-gcov-tool-12 /bin/b2sum /bin/x86_64-linux-gnu-lto-dump-12 /bin/pod2man /bin/sha1sum /bin/c89-gcc /bin/pl2pm /bin/h2ph /bin/x86_64-linux-gnu-c++filt /bin/sha512sum /bin/x86_64-linux-gnu-gcc-12 /bin/x86_64-linux-gnu-gp-display-src /bin/base32 /bin/x86_64-linux-gnu-gp-collect-app /bin/cpan5.36-x86_64-linux-gnu /bin/x86_64-linux-gnu-gp-archive /bin/sha384sum /bin/py3clean /bin/x86_64-linux-gnu-gcov-dump-12 /bin/perl5.36-x86_64-linux-gnu /bin/x86_64-linux-gnu-strings /bin/x86_64-linux-gnu-gp-display-html /bin/pygettext3.11 /bin/systemd-id128 /bin/x86_64-linux-gnu-dwp /bin/bunzip2 /bin/x86_64-linux-gnu-gp-display-text /bin/x86_64-linux-gnu-addr2line /bin/py3compile /bin/grub-syslinux2cfg /bin/diff3 /bin/sha256sum /sbin/dumpe2fs /sbin/e2fsck /sbin/e2freefrag /sbin/e2undo /sbin/e2scrub_all /sbin/tune2fs /sbin/e2image /sbin/e4defrag /sbin/mke2fs /sbin/e4crypt /sbin/killall5 /sbin/e2scrub /sbin/resize2fs
+/bin/pod2html
+/bin/python3.11
+/bin/ssh-argv0
+/bin/c99-gcc
+/bin/x86_64-linux-gnu-gcc-ar-12
+# ...
+/sbin/mke2fs
+/sbin/e4crypt
+/sbin/killall5
+/sbin/e2scrub
+/sbin/resize2fs
+
+# 2.14
 export PS1="\e[0;32m\u@\e[0;33m\h\e[m-\e[0;31m\D{%H:%M}\e[0;36m>\e[m "
+
+# 2.15
 echo 'export PS1="\e[0;32m\u@\e[0;33m\h\e[m-\e[0;31m\D{%H:%M}\e[0;36m>\e[m "' >> .bashrc
+
+# 2.16
 mkdir $(date +"%Y")-{01..12}
+
 ls
 2025-01 2025-02 2025-03 2025-04 2025-05 2025-06 2025-07 2025-08 2025-09 2025-10 2025-11 2025-12 eltex-pg2-v1_part2.log report_part1.txt
