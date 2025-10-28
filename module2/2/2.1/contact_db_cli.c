@@ -5,6 +5,8 @@
 
 #define DB_CAPACITY 4
 
+char charp; // char for scanf
+
 int generateID() {
     static int id = 0;
 
@@ -16,7 +18,7 @@ int getID() {
 
     do {
         printf("enter id (>= 0): ");
-        scanf("%d", &result);
+        scanf("%d%c", &result, &charp);
         if (result < 0) {
             printf("invalid input\n");
         }
@@ -25,15 +27,69 @@ int getID() {
     return result;
 }
 
-ContactData getContactInfo(int ignore_mandatory_fields) {
-    ContactData result;
-
+void getNewContactParam(const char *prompt, char *dest, int dest_len, int is_mandatory) {
     char buf[256];
-    printf("enter contact info (Enter to skip):\n");
-    printf("first_name: ");
-    fgets(buf, 256, stdin);
+    buf[0] = '\0';
 
-    return result;
+    if (is_mandatory) {
+        do {
+            if (*buf == '\n') {
+                printf("this field can't be empty\n");
+            }
+            printf("%s: ", prompt);
+            fgets(buf, 256, stdin);
+        } while (strchr(buf, '\n') == buf); // while first char is \n
+    } else {
+        printf("%s: ", prompt);
+        fgets(buf, 256, stdin);
+    }
+    *(strchr(buf, '\n')) = '\0';
+    strncpy(dest, buf, dest_len);
+}
+
+void getExistingContactParam(const char *prompt, char *dest, int dest_len, int is_mandatory) {
+    char buf[256];
+    buf[0] = '\0';
+
+    printf("%s (%s): ", prompt, (*dest == '\0') ? "empty" : dest);
+    fgets(buf, 256, stdin);
+    char *end = strchr(buf, '\n');
+    if (end != buf) {
+        *end = '\0';
+        strncpy(dest, buf, dest_len);
+    }
+}
+
+void getContactInfo(ContactData *contact, int is_new_contact, int require_name) {
+    void (*getContactParam) (const char *, char *, int, int);
+    getContactParam = (is_new_contact) ? getNewContactParam : getExistingContactParam;
+
+    if (is_new_contact) {
+        memset(contact, 0, sizeof(ContactData));
+    }
+
+    printf("Enter contact info (Enter to skip (leave as is)):\n");
+    getContactParam("first_name", contact->first_name, NAME_LEN, require_name);
+    getContactParam("last_name", contact->last_name, NAME_LEN, require_name);
+    getContactParam("patronymic", contact->patronymic, NAME_LEN, 0);
+    getContactParam("job", contact->job, JOB_LEN, 0);
+    getContactParam("job_position", contact->job_position, JOB_LEN, 0);
+    printf("phone_numbers:\n");
+    for (int i = 0; i < MAX_PHONE_NUMBERS; i++) {
+        char prompt[3] = "\ti";
+        prompt[1] = (char) ('0' + i + 1); // will break if i >= 10 :)
+        getContactParam(prompt, contact->phone_numbers[i], PHONE_LEN, 0);    
+    }
+    printf("email_addresses:\n");
+    for (int i = 0; i < MAX_EMAIL_ADDRESSES; i++) {
+        char prompt[3] = "\ti";
+        prompt[1] = (char) ('0' + i + 1); // will break if i >= 10 :)
+        getContactParam(prompt, contact->email_addresses[i], EMAIL_LEN, 0);
+    }
+    printf("socials:\n");
+    getContactParam("\ttelegram", contact->socials.telegram, SOCIALS_LEN, 0);
+    getContactParam("\tvk", contact->socials.vk, SOCIALS_LEN, 0);
+    getContactParam("\tmax", contact->socials.max, SOCIALS_LEN, 0);
 }
 
 int printMenu() {
@@ -50,7 +106,7 @@ int printMenu() {
     printf("0) Exit\n");
 
     printf("\nselect op: ");
-    scanf("%d", &result);
+    scanf("%d%c", &result, &charp);
 
     return result;
 }
@@ -104,10 +160,23 @@ int main() {
         ContactData contact;
         switch (op) {
             case 1:  // create
-
+                getContactInfo(&contact, 1, 1);
+                contact_ptr = saveContact(&db, contact);
+                if (contact_ptr) {
+                    printf("Successfully created, id = %d\n", contact_ptr->id);
+                } else {
+                    printf("Failed to create new contact\n");
+                }
                 break;
             case 2:  // edit
-
+                id = getID();
+                contact_ptr = findContactByID(db, id);
+                if (!contact_ptr) {
+                    printf("Contact not found!\n");
+                    break;
+                }
+                getContactInfo(contact_ptr, 0, 1);
+                saveContact(&db, *contact_ptr);
                 break;
             case 3:  // delete
                 id = getID();
