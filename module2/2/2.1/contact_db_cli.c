@@ -5,7 +5,7 @@
 
 #define DB_CAPACITY 4
 
-char charp; // char for scanf
+char charp;  // char for scanf
 
 int generateID() {
     static int id = 0;
@@ -38,7 +38,7 @@ void getNewContactParam(const char *prompt, char *dest, int dest_len, int is_man
             }
             printf("%s: ", prompt);
             fgets(buf, 256, stdin);
-        } while (strchr(buf, '\n') == buf); // while first char is \n
+        } while (strchr(buf, '\n') == buf);  // while first char is \n
     } else {
         printf("%s: ", prompt);
         fgets(buf, 256, stdin);
@@ -61,7 +61,7 @@ void getExistingContactParam(const char *prompt, char *dest, int dest_len, int i
 }
 
 void getContactInfo(ContactData *contact, int is_new_contact, int require_name) {
-    void (*getContactParam) (const char *, char *, int, int);
+    void (*getContactParam)(const char *, char *, int, int);
     getContactParam = (is_new_contact) ? getNewContactParam : getExistingContactParam;
 
     if (is_new_contact) {
@@ -77,13 +77,13 @@ void getContactInfo(ContactData *contact, int is_new_contact, int require_name) 
     printf("phone_numbers:\n");
     for (int i = 0; i < MAX_PHONE_NUMBERS; i++) {
         char prompt[3] = "\ti";
-        prompt[1] = (char) ('0' + i + 1); // will break if i >= 10 :)
-        getContactParam(prompt, contact->phone_numbers[i], PHONE_LEN, 0);    
+        prompt[1] = (char)('0' + i + 1);  // will break if i >= 10 :)
+        getContactParam(prompt, contact->phone_numbers[i], PHONE_LEN, 0);
     }
     printf("email_addresses:\n");
     for (int i = 0; i < MAX_EMAIL_ADDRESSES; i++) {
         char prompt[3] = "\ti";
-        prompt[1] = (char) ('0' + i + 1); // will break if i >= 10 :)
+        prompt[1] = (char)('0' + i + 1);  // will break if i >= 10 :)
         getContactParam(prompt, contact->email_addresses[i], EMAIL_LEN, 0);
     }
     printf("socials:\n");

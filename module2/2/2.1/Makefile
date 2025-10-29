@@ -1,9 +1,9 @@
 CC=gcc
-FLAGS=-Wall -Wextra -std=c99
+FLAGS=-Wall -Wextra -std=c11
 MODULES_C=contact_db.c contact_db_cli.c
 MODULES_H=contact_db.h
 MODULES_O=$(MODULES_C:.c=.o)
-SOLUTION_EXE=solution
+SOLUTION_EXE=contact_db_cli
 
 all: clean
 	make solution
