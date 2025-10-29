@@ -161,6 +161,7 @@ int main() {
         switch (op) {
             case 1:  // create
                 getContactInfo(&contact, 1, 1);
+                contact.id = generateID();
                 contact_ptr = saveContact(&db, contact);
                 if (contact_ptr) {
                     printf("Successfully created, id = %d\n", contact_ptr->id);
