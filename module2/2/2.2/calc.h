@@ -1,7 +1,6 @@
 #ifndef CALC_H
 #define CALC_H
 
-#include <math.h>
 #include <stdarg.h>
 
 double add(int n, ...);
