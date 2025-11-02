@@ -7,7 +7,7 @@ SOLUTION_EXE=chstat
 
 all: clean
 	make solution
-	./$(SOLUTION_EXE)
+	make run
 
 solution: $(MODULES_O)
 	$(CC) -o $(SOLUTION_EXE) $(MODULES_O)
@@ -18,6 +18,9 @@ solution: $(MODULES_O)
 
 fmt:
 	clang-format -i $(MODULES_C) $(MODULES_H)
+
+run:
+	./$(SOLUTION_EXE) -f $(SOLUTION_EXE)
 
 clean: clean_o clean_exe
 
