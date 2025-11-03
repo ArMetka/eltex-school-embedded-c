@@ -3,15 +3,7 @@
 
 #include "./contact_db.h"
 
-#define DB_CAPACITY 4
-
 char charp;  // char for scanf
-
-int generateID() {
-    static int id = 0;
-
-    return id++;
-}
 
 int getID() {
     int result = 0;
@@ -102,7 +94,7 @@ int printMenu() {
     printf("3) Delete contact\n");
     printf("4) Print contact\n");
     printf("5) Clear DB\n");
-    printf("6) Dump DB\n");
+    printf("6) Print DB (list structure)\n");
     printf("0) Exit\n");
 
     printf("\nselect op: ");
@@ -147,7 +139,7 @@ void printContact(ContactData contact) {
 }
 
 int main() {
-    ContactDB db = initContactDatabase(DB_CAPACITY);
+    ContactDB db = initContactDatabase();
 
     while (1 != 0) {
         int op = printMenu();
@@ -160,8 +152,15 @@ int main() {
         ContactData contact;
         switch (op) {
             case 1:  // create
+                id = -1;
+                do {
+                    if (id != -1) {
+                        printf("Contact with this id already exists!\n");
+                    }
+                    id = getID();
+                } while (findContactByID(db, id) != NULL);
                 getContactInfo(&contact, 1, 1);
-                contact.id = generateID();
+                contact.id = id;
                 contact_ptr = saveContact(&db, contact);
                 if (contact_ptr) {
                     printf("Successfully created, id = %d\n", contact_ptr->id);
@@ -198,10 +197,10 @@ int main() {
                 break;
             case 5:  // clear db
                 destroyContactDatabase(db);
-                db = initContactDatabase(DB_CAPACITY);
+                db = initContactDatabase();
                 break;
             case 6:  // dump db
-                dumpDB(stdout, db);
+                printDB(stdout, db);
                 break;
             default:
                 printf("Invalid input!\n");

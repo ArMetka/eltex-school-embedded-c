@@ -5,8 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_PHONE_NUMBERS 4
-#define MAX_EMAIL_ADDRESSES 4
+#define MAX_PHONE_NUMBERS 2
+#define MAX_EMAIL_ADDRESSES 2
 #define SOCIALS_LEN 64
 #define NAME_LEN 32
 #define JOB_LEN 128
@@ -32,23 +32,22 @@ typedef struct {
 } ContactData;
 
 typedef struct Node {
-    Node *next;
-    Node *prev;
+    struct Node *next;
+    struct Node *prev;
     ContactData data; // order is based on data.id
 } Node;
 
 typedef struct {
-    int size;
-    int capacity;
-    ContactData *contacts;
+    Node *head;
+    Node *tail;
 } ContactDB;
 
-ContactDB initContactDatabase(int capacity);
+ContactDB initContactDatabase();
 void destroyContactDatabase(ContactDB db);
 void copyContact(ContactData *dest, const ContactData src);
 ContactData *findContactByID(ContactDB db, int id);
 ContactData *saveContact(ContactDB *db, ContactData contact);
 int deleteContactByID(ContactDB *db, int id);
-void dumpDB(FILE *out, ContactDB db);
+void printDB(FILE *out, ContactDB db);
 
 #endif

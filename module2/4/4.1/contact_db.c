@@ -1,20 +1,19 @@
 #include "./contact_db.h"
 
-ContactDB initContactDatabase(int capacity) {
-    ContactData *contacts = (ContactData *)calloc(capacity, sizeof(ContactData));
-
-    for (int i = 0; i < capacity; i++) {
-        (contacts + i)->id = -1;  // set id = -1 to the entire array
-    }
-
-    ContactDB db = {0, capacity, contacts};
+ContactDB initContactDatabase() {
+    ContactDB db = {
+        NULL,
+        NULL
+    };
 
     return db;
 }
 
 void destroyContactDatabase(ContactDB db) {
-    if (db.contacts) {
-        free(db.contacts);
+    while (db.head) {
+        Node *tmp = db.head;
+        db.head = db.head->next;
+        free(tmp);
     }
 }
 
@@ -37,73 +36,115 @@ void copyContact(ContactData *dest, const ContactData src) {
 }
 
 ContactData *findContactByID(ContactDB db, int id) {
-    if (!db.contacts) {
-        return NULL;
-    }
+    Node *tmp = db.head;
 
-    for (int i = 0; i < db.capacity; i++) {
-        if (db.contacts[i].id == id) {
-            return db.contacts + i;
+    while (tmp) {
+        if (tmp->data.id == id) {
+            return &(tmp->data);
         }
+        tmp = tmp->next;
     }
 
     return NULL;
 }
 
 ContactData *saveContact(ContactDB *db, ContactData contact) {
-    if (!db || !db->contacts || contact.id < 0) {
+    if (!db || contact.id < 0) {
         return NULL;
     }
 
     ContactData *old = findContactByID(*db, contact.id);
-    if (old) {  // editing old contact
+    if (old) { // editing old contact
         copyContact(old, contact);
         return old;
-    } else if (db->size < db->capacity - 1) {         // saving new contact
-        ContactData *new = findContactByID(*db, -1);  // find free
-        copyContact(new, contact);
-        db->size++;
-        return new;
-    } else {  // not enough space
-        return NULL;
+    } else {   // saving new contact
+        Node *new_node = (Node*)calloc(1, sizeof(Node));
+        copyContact(&(new_node->data), contact);
+
+        if (db->head == NULL) {
+            db->head = new_node;
+            db->tail = new_node;
+            new_node->next = NULL;
+            new_node->prev = NULL;
+        } else {
+            Node *tmp = db->head;
+            Node *prev = NULL;
+            while (tmp && tmp->data.id <= new_node->data.id) {
+                prev = tmp;
+                tmp = tmp->next;
+            }
+
+            if (prev == NULL) { // new_node->data.id is the lowest
+                tmp->prev = new_node;
+                new_node->next = tmp;
+                new_node->prev = NULL;
+                db->head = new_node;
+            } else if (tmp == NULL) { // new_node->data.id is the highest
+                prev->next = new_node;
+                new_node->prev = prev;
+                new_node->next = NULL;
+                db->tail = new_node;
+            } else { // somewhere inbetween
+                new_node->next = tmp;
+                tmp->prev = new_node;
+                new_node->prev = prev;
+                prev->next = new_node;
+            }
+        }
+
+        return &(new_node->data);
     }
 }
 
 int deleteContactByID(ContactDB *db, int id) {
-    if (!db || !db->contacts || id < 0) {
+    if (!db || id < 0) {
+        return 0;
+    }
+    
+    Node *tmp = db->head;
+    while (tmp && tmp->data.id != id) {
+        tmp = tmp->next;
+    }
+
+    if (!tmp) {
         return 0;
     }
 
-    ContactData *del = findContactByID(*db, id);
-    if (del) {  // deleting
-        memset(del, 0, sizeof(ContactData));
-        del->id = -1;  // mark free
-        db->size--;
-        return 1;
-    } else {  // not found
-        return 0;
+    if (tmp == db->head) {
+        db->head = tmp->next;
+        if (tmp->next) {
+            tmp->next->prev = NULL;
+        }
+    } else if (tmp == db->tail) {
+        db->tail = tmp->prev;
+        if (tmp->prev) {
+            tmp->prev->next = NULL;
+        }
+    } else {
+        tmp->next->prev = tmp->prev;
+        tmp->prev->next = tmp->next;
     }
+    free(tmp);
+
+    return 1;
 }
 
-void dumpDB(FILE *out, ContactDB db) {
-    fprintf(out, "ContactDB dump\n");
-    for (int i = 0; i < db.capacity; i++) {
-        fprintf(out, "entry #%d:\n", i);
-        fprintf(out, "1\t%d\n", db.contacts[i].id);
-        fprintf(out, "2\t%s\n", db.contacts[i].first_name);
-        fprintf(out, "3\t%s\n", db.contacts[i].last_name);
-        fprintf(out, "4\t%s\n", db.contacts[i].patronymic);
-        fprintf(out, "5\t%s\n", db.contacts[i].job);
-        fprintf(out, "6\t%s\n", db.contacts[i].job_position);
-        for (int j = 0; j < MAX_PHONE_NUMBERS; j++) {
-            fprintf(out, "7\t%d\t%s\n", j + 1, db.contacts[i].phone_numbers[j]);
-        }
-        for (int j = 0; j < MAX_PHONE_NUMBERS; j++) {
-            fprintf(out, "8\t%d\t%s\n", j + 1, db.contacts[i].email_addresses[j]);
-        }
-        fprintf(out, "9\t1\t%s\n", db.contacts[i].socials.telegram);
-        fprintf(out, "9\t2\t%s\n", db.contacts[i].socials.vk);
-        fprintf(out, "9\t3\t%s\n", db.contacts[i].socials.max);
-        fprintf(out, "\n");
+void printDB(FILE *out, ContactDB db) {
+    fprintf(out, "ContactDB: \n");
+
+    Node *tmp = db.head;
+    fprintf(out, "(head)\t->");
+    while (tmp) {
+        fprintf(out, "\t%d\t->", tmp->data.id);
+        tmp = tmp->next;
     }
+    fprintf(out, "\tNULL\n");
+
+    tmp = db.head;
+    fprintf(out, "NULL\t<-");
+    while (tmp) {
+        fprintf(out, "\t%d\t<-", tmp->data.id);
+        tmp = tmp->next;
+    }
+    fprintf(out, "\t(tail)\n");
 }
