@@ -1,5 +1,4 @@
 #include "./ip4test.h"
-#include <string.h>
 
 int main(int argc, char **argv) {
     unsigned int gateway;
@@ -29,6 +28,10 @@ int main(int argc, char **argv) {
     double hit_prob = 1. / pow(2, netmask_num);
     printf("Theoretical hit probability: %.6lf\n", hit_prob);
     printf("Theoretical hit count: %d\n", (int) round(hit_prob * n));
+
+    int hits = testHitProbability(gateway, netmask, n);
+    printf("Actual hit probability: %.6lf\n", (double) hits / (double) n);
+    printf("Actual hit count: %d\n", hits);
 
     return 0;
 }
@@ -73,6 +76,21 @@ int readArgs(int argc, char **argv, unsigned int *gateway, unsigned int *netmask
     }
 
     return 1;
+}
+
+int testHitProbability(unsigned int gateway, unsigned int netmask, int n) {
+    int result = 0;
+    unsigned int network = gateway & netmask;
+
+    srand(RAND_SEED);
+    for (int i = 0; i < n; i++) {
+        unsigned int ip = (((unsigned int) rand()) << 16) + (((unsigned int) rand()) & 0xFFFF);
+        if ((ip & netmask) == network) {
+            result++;
+        }
+    }
+
+    return result;
 }
 
 int parseAddr4(char *src, unsigned int *result) {
