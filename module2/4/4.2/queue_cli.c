@@ -77,13 +77,33 @@ int main() {
             case 2: // pop
                 buf = pop(&queue);
                 printf("value = ");
-                QUEUE_DATATYPE_PRINT_FUNC(buf);
+                if (buf) {
+                    QUEUE_DATATYPE_PRINT_FUNC(buf);
+                    free(buf);
+                } else {
+                    printf("NULL");
+                }
                 printf("\n");
-                free(buf);
                 break;
             case 3: // pop exact
+                buf = popExactPriority(&queue, getPriority());
+                if (buf) {
+                    QUEUE_DATATYPE_PRINT_FUNC(buf);
+                    free(buf);
+                } else {
+                    printf("NULL");
+                }
+                printf("\n");
                 break;
             case 4: // pop at least
+                buf = popAtLeastPriority(&queue, getPriority());
+                if (buf) {
+                    QUEUE_DATATYPE_PRINT_FUNC(buf);
+                    free(buf);
+                } else {
+                    printf("NULL");
+                }
+                printf("\n");
                 break;
             case 5: // clear
                 destroyQueue(&queue);
