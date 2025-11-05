@@ -6,6 +6,8 @@
 #define QUEUE_DATATYPE int
 #define QUEUE_DATATYPE_SCAN_FUNC getInt // QUEUE_DATATYPE* (* QUEUE_DATATYPE_SCAN_FUNC) (void)
 #define QUEUE_DATATYPE_PRINT_FUNC printInt // void (* QUEUE_DATATYPE_PRINT_FUNC) (QUEUE_DATATYPE*)
+#define FILL_DATA_COUNT 15
+#define FILL_DATA_MAX_VAL 10
 
 char charp;
 
@@ -20,6 +22,7 @@ int printMenu() {
     printf("4) Pop with at least priority\n");
     printf("5) Clear queue\n");
     printf("6) Print queue\n");
+    printf("7) Fill test data\n");
     printf("0) Exit\n");
 
     printf("\nselect op: ");
@@ -111,6 +114,13 @@ int main() {
                 break;
             case 6: // print
                 printQueue(&queue, printInt);
+                break;
+            case 7: // fill
+                buf = (int*)calloc(FILL_DATA_COUNT, sizeof(int));
+                for (int i = 0; i < FILL_DATA_COUNT; i++) {
+                    *(buf + i) = (rand() % (FILL_DATA_MAX_VAL + 1));
+                    push(&queue, buf + i, *(buf + i) % 256);
+                }
                 break;
             default:
                 printf("Invalid input!\n");
