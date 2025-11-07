@@ -85,6 +85,12 @@ int loadSharedObjects() {
     return 1;
 }
 
+void unloadSharedObjects() {
+    for (int i = 0; i < binary_ops_count; i++) {
+        dlclose(binary_ops[i].handle);
+    }
+}
+
 int main() {
     double buf1, buf2;
 
@@ -104,6 +110,7 @@ int main() {
                 binary_ops[op - 1].op = dlsym(binary_ops[op - 1].handle, binary_ops[op - 1].name);
                 if (!binary_ops[op - 1].op) {
                     fprintf(stderr, "Failed to load function %s from %s/%s.so!\n", binary_ops[op - 1].name, BINARY_OPS_DIR, binary_ops[op - 1].name);
+                    unloadSharedObjects();
                     return 1;
                 }
             }
@@ -112,5 +119,7 @@ int main() {
             printf("answer = %.2lf\n", binary_ops[op - 1].op(buf1, buf2));
         }
     }
+    
+    unloadSharedObjects();
     return 0;
 }
