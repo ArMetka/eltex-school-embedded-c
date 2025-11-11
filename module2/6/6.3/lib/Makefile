@@ -9,7 +9,7 @@ all: clean
 	$(MAKE) lib
 
 .PHONY: lib
-lib: $(MODULES_O) $(MODULES_SO)
+lib: clean_lib $(MODULES_O) $(MODULES_SO)
 	$(MAKE) clean_o
 
 %.o: %.c
