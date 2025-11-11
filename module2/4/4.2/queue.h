@@ -20,6 +20,7 @@ int push(Queue *queue, void *data, unsigned char priority);
 void *pop(Queue *queue);
 void *popExactPriority(Queue *queue, unsigned char priority);
 void *popAtLeastPriority(Queue *queue, unsigned char priority);
+void *popAtMaxPriority(Queue *queue, unsigned char priority);
 void printQueue(Queue *queue, void (*print_callback) (void *));
 
 #endif

@@ -20,9 +20,10 @@ int printMenu() {
     printf("2) Pop\n");
     printf("3) Pop with exact priority\n");
     printf("4) Pop with at least priority\n");
-    printf("5) Clear queue\n");
-    printf("6) Print queue\n");
-    printf("7) Fill test data\n");
+    printf("5) Pop with at max priority\n");
+    printf("6) Clear queue\n");
+    printf("7) Print queue\n");
+    printf("8) Fill test data\n");
     printf("0) Exit\n");
 
     printf("\nselect op: ");
@@ -108,18 +109,28 @@ int main() {
                 }
                 printf("\n");
                 break;
-            case 5: // clear
+            case 5: // pop at max
+                buf = popAtMaxPriority(&queue, getPriority());
+                if (buf) {
+                    QUEUE_DATATYPE_PRINT_FUNC(buf);
+                    free(buf);
+                } else {
+                    printf("NULL");
+                }
+                printf("\n");
+                break;
+            case 6: // clear
                 destroyQueue(&queue);
                 queue = initQueue();
                 break;
-            case 6: // print
+            case 7: // print
                 printQueue(&queue, printInt);
                 break;
-            case 7: // fill
-                buf = (int*)calloc(FILL_DATA_COUNT, sizeof(int));
+            case 8: // fill
                 for (int i = 0; i < FILL_DATA_COUNT; i++) {
-                    *(buf + i) = (rand() % (FILL_DATA_MAX_VAL + 1));
-                    push(&queue, buf + i, *(buf + i) % 256);
+                    int *buf = (int*)calloc(1, sizeof(int));
+                    *buf = rand() % (FILL_DATA_MAX_VAL + 1);
+                    push(&queue, buf, *buf % 256);
                 }
                 break;
             default:

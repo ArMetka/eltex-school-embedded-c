@@ -111,7 +111,7 @@ void *popAtLeastPriority(Queue *queue, unsigned char priority) {
     QueueNode *curr = queue->head;
     QueueNode *prev = NULL;
     while (curr) {
-        if (curr->priority <= priority) {
+        if (curr->priority < priority) {
             if (prev) {
                 prev->next = curr->next;    
             } else {  // pop first
@@ -124,6 +124,34 @@ void *popAtLeastPriority(Queue *queue, unsigned char priority) {
             return result;
         } else {
             return NULL;
+        }
+
+        prev = curr;
+        curr = curr->next;
+    }
+
+    return NULL;
+}
+
+void *popAtMaxPriority(Queue *queue, unsigned char priority) {
+    if (!queue) {
+        return NULL;
+    }
+
+    QueueNode *curr = queue->head;
+    QueueNode *prev = NULL;
+    while (curr) {
+        if (curr->priority >= priority) {
+            if (prev) {
+                prev->next = curr->next;    
+            } else {  // pop first
+                queue->head = curr->next;
+            }
+            
+            void *result = curr->data;
+            free(curr);
+
+            return result;
         }
 
         prev = curr;
