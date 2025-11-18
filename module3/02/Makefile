@@ -3,17 +3,17 @@ FLAGS=-Wall -Wextra -std=c11
 EXAMPLES_C=sum.c print-args.c
 EXAMPLES_O=$(EXAMPLES_C:.c=.o)
 EXAMPLES_EXE=$(EXAMPLES_C:.c=)
-MODULES_C=solution.c
+MODULES_C=shell.c
 MODULES_O=$(MODULES_C:.c=.o)
-SOLUTION_EXE=solution
+SOLUTION_EXE=shell
 
 all: clean
-	$(MAKE) solution
+	$(MAKE) shell
 	$(MAKE) examples
 	$(MAKE) run
 
-.PHONY: solution
-solution: $(MODULES_O)
+.PHONY: shell
+shell: $(MODULES_O)
 	$(CC) -o $(SOLUTION_EXE) $(MODULES_O)
 	$(MAKE) clean_o
 

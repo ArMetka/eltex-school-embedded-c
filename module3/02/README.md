@@ -29,13 +29,13 @@ make examples
 ### Решение (интерпретатор)
 
 - Неинтерактивный режим
-`./solution FILE [OPTIONS...]`
+`./shell FILE [OPTIONS...]`
 - Интерактивный режим
-`./solution`
+`./shell`
 
 ```shell
-./solution ls ~
-./solution
+./shell ls ~
+./shell
 ```
 
 > Для выхода из интерпертатора необходимо ввести `exit` или воспользоваться `^D`
