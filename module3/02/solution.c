@@ -23,12 +23,13 @@ int main(int argc, char **argv) {
     int args_count = 0;
     char **args;
     int rv;
-
-    // printf("program args (%d):\n", argc);
-    // for (int i = 0; i < argc; i++) {
-    //     printf("%s\n", argv[i]);
-    // }
-
+    
+    if (argc > 1) { // run from argv (non-interactive mode)
+        execvp(argv[1], &(argv[1]));
+        perror("exec");
+        exit(EXIT_FAILURE);
+    }
+    
     sprintf(shell_prompt, "%s> ", getlogin());
 
     while (1) {
@@ -36,7 +37,7 @@ int main(int argc, char **argv) {
 
         buf[BUF_LEN - 1] = '\n';
         if (!fgets(buf, BUF_LEN, stdin)) {  // EOF
-            printf("exit");
+            printf("exit\n");
             break;
         }
         if (buf[BUF_LEN - 1] != '\n') {
