@@ -1,16 +1,27 @@
 CC=gcc
 FLAGS=-Wall -Wextra -std=c11
+EXAMPLES_C=sum.c print-args.c
+EXAMPLES_O=$(EXAMPLES_C:.c=.o)
+EXAMPLES_EXE=$(EXAMPLES_C:.c=)
 MODULES_C=solution.c
 MODULES_O=$(MODULES_C:.c=.o)
 SOLUTION_EXE=solution
 
 all: clean
 	$(MAKE) solution
+	$(MAKE) examples
 	$(MAKE) run
 
 .PHONY: solution
 solution: $(MODULES_O)
 	$(CC) -o $(SOLUTION_EXE) $(MODULES_O)
+	$(MAKE) clean_o
+
+.PHONY: examples
+examples: $(EXAMPLES_O)
+	for exe in $(EXAMPLES_EXE) ; do \
+		$(CC) -o $$exe $$exe.o ; \
+	done
 	$(MAKE) clean_o
 
 .PHONY: run
@@ -34,3 +45,4 @@ clean_o:
 .PHONY: clean_exe
 clean_exe:
 	rm -rf $(SOLUTION_EXE)
+	rm -rf $(EXAMPLES_EXE)

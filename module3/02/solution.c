@@ -1,21 +1,28 @@
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
-#include <sys/types.h>
 
 #define BUF_LEN 2048
 #define MAX_ARG_LEN 256
 
 int parseArgs(char *args, char ***result);
 void reallocArgs(int arg_cur, int arg_max, char ***args);
+void freeArgs(int args_count, char **args);
 
+/**
+ * "exit" or ^D to exit
+ * "?" to get last return value
+ */
 int main(int argc, char **argv) {
     char buf[BUF_LEN];
     char shell_prompt[128] = "";
     int args_count = 0;
     char **args;
+    int rv;
 
     // printf("program args (%d):\n", argc);
     // for (int i = 0; i < argc; i++) {
@@ -28,8 +35,8 @@ int main(int argc, char **argv) {
         printf("%s", shell_prompt);
 
         buf[BUF_LEN - 1] = '\n';
-        if (!fgets(buf, BUF_LEN, stdin)) { // EOF
-            printf("exit\n\n");
+        if (!fgets(buf, BUF_LEN, stdin)) {  // EOF
+            printf("exit");
             break;
         }
         if (buf[BUF_LEN - 1] != '\n') {
@@ -39,10 +46,15 @@ int main(int argc, char **argv) {
         args_count = parseArgs(buf, &args);
 
         if (args_count == 0) {
+            freeArgs(args_count, args);
             continue;
         } else if (args_count == 1 && strcmp(args[0], "exit") == 0) {
-            printf("\n");
+            freeArgs(args_count, args);
             break;
+        } else if (args_count == 1 && strcmp(args[0], "?") == 0) {
+            printf("%d\n", rv);
+            freeArgs(args_count, args);
+            continue;
         }
 
         // printf("cmd: %s\n", args[0]);
@@ -53,24 +65,19 @@ int main(int argc, char **argv) {
         // }
 
         pid_t pid;
-        int rv;
         switch (pid = fork()) {
-            case -1: // error
+            case -1:  // error
                 perror("fork");
                 exit(EXIT_FAILURE);
-            case 0: // child
+            case 0:  // child
                 execvp(args[0], args);
                 perror("exec");
                 exit(EXIT_FAILURE);
-            default:
+            default:  // parent
                 wait(&rv);
-                printf("Process exited with %d\n", rv);
+                // printf("\nProcess exited with %d\n", rv);
         }
-
-        for (int i = 0; i < args_count; i++) {
-            free(args[i]);
-        }
-        free(args);
+        freeArgs(args_count, args);
     }
 
     return 0;
@@ -78,7 +85,7 @@ int main(int argc, char **argv) {
 
 /**
  * arguments must be separated with whitespaces
- * 
+ *
  * in order to input argument containing whitespaces, argument
  * must be either in double quotes ("") or have all its
  * whitespaces escaped (\ )
@@ -87,16 +94,16 @@ int main(int argc, char **argv) {
  * [\][nt\'"vr0 ]
  *
  * returns number of arguments (array elements)
- * 
+ *
  * result array is null-terminated
  */
 int parseArgs(char *args, char ***result) {
     int arg_cur = -1;
     int arg_max = 4;
 
-    *result = (char**)calloc(arg_max + 1, sizeof(char*));
+    *result = (char **)calloc(arg_max + 1, sizeof(char *));
     for (int i = 0; i < arg_max; i++) {
-        (*result)[i] = (char*)calloc(MAX_ARG_LEN, sizeof(char));
+        (*result)[i] = (char *)calloc(MAX_ARG_LEN, sizeof(char));
     }
 
     int arg_start = 0;
@@ -106,49 +113,49 @@ int parseArgs(char *args, char ***result) {
     for (int i = 0; args[i] != '\n'; i++) {
         // printf("arg=%c, as=%d, is=%d, qf=%d, ef=%d\n", args[i], arg_start, is_started, quotes_flag, escape_flag);
 
-        if (!is_started && args[i] == ' ') { // space between args, skip
+        if (!is_started && args[i] == ' ') {  // space between args, skip
             arg_start = i + 1;
             continue;
-        } else if (!is_started) { // new arg
+        } else if (!is_started) {  // new arg
             is_started = 1;
             arg_cur++;
-            if (arg_cur >= arg_max) { // out of space, realloc
+            if (arg_cur >= arg_max) {  // out of space, realloc
                 arg_max <<= 1;
                 reallocArgs(arg_cur, arg_max, result);
             }
         }
 
         if (args[i] == ' ') {
-            if (escape_flag) { // replace backslash with space
+            if (escape_flag) {  // replace backslash with space
                 escape_flag = 0;
                 arg_start++;
                 (*result)[arg_cur][i - arg_start] = args[i];
-            } else if (quotes_flag) { // part of arg, just read
+            } else if (quotes_flag) {  // part of arg, just read
                 (*result)[arg_cur][i - arg_start] = args[i];
-            } else { // end of arg
+            } else {  // end of arg
                 (*result)[arg_cur][i - arg_start] = '\0';
                 arg_start = i + 1;
                 is_started = 0;
             }
         } else if (args[i] == '\"') {
-            if (escape_flag) { // replace backslash with quote
+            if (escape_flag) {  // replace backslash with quote
                 escape_flag = 0;
                 arg_start--;
                 (*result)[arg_cur][i - arg_start] = args[i];
-            } else if (quotes_flag) { // end of arg
+            } else if (quotes_flag) {  // end of arg
                 quotes_flag = 0;
                 (*result)[arg_cur][i - arg_start] = '\0';
                 arg_start = i + 1;
                 is_started = 0;
-            } else { // start of arg
+            } else {  // start of arg
                 quotes_flag = 1;
                 arg_start++;
             }
         } else if (args[i] == '\\') {
-            if (escape_flag) { // prev char was backslash, leave it as is and skip 1 char
+            if (escape_flag) {  // prev char was backslash, leave it as is and skip 1 char
                 escape_flag = 0;
                 arg_start++;
-            } else { // if escape sequence is correct, next char will replace this backslash
+            } else {  // if escape sequence is correct, next char will replace this backslash
                 escape_flag = 1;
                 (*result)[arg_cur][i - arg_start] = args[i];
             }
@@ -174,11 +181,11 @@ int parseArgs(char *args, char ***result) {
                 case '0':
                     (*result)[arg_cur][i - arg_start] = '\0';
                     break;
-                default: // unsupported sequence, leave backslash and read current char
+                default:  // unsupported sequence, leave backslash and read current char
                     arg_start--;
                     (*result)[arg_cur][i - arg_start] = args[i];
             }
-        } else { // just read
+        } else {  // just read
             (*result)[arg_cur][i - arg_start] = args[i];
         }
     }
@@ -192,9 +199,16 @@ int parseArgs(char *args, char ***result) {
 }
 
 void reallocArgs(int arg_cur, int arg_max, char ***args) {
-    *args = realloc(*args, (arg_max + 1) * sizeof(char*));
+    *args = realloc(*args, (arg_max + 1) * sizeof(char *));
     // *args = reallocarray(*args, arg_max + 1, sizeof(char*));
     for (int i = arg_cur; i < arg_max; i++) {
-        (*args)[i] = (char*)calloc(MAX_ARG_LEN, sizeof(char));
+        (*args)[i] = (char *)calloc(MAX_ARG_LEN, sizeof(char));
     }
+}
+
+void freeArgs(int args_count, char **args) {
+    for (int i = 0; i < args_count; i++) {
+        free(args[i]);
+    }
+    free(args);
 }
