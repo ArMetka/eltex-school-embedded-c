@@ -1,0 +1,48 @@
+CC=gcc
+FLAGS=-Wall -Wextra -std=c11
+EXAMPLES_C=sum.c print-args.c
+EXAMPLES_O=$(EXAMPLES_C:.c=.o)
+EXAMPLES_EXE=$(EXAMPLES_C:.c=)
+MODULES_C=shell.c
+MODULES_O=$(MODULES_C:.c=.o)
+SOLUTION_EXE=shell
+
+all: clean
+	$(MAKE) shell
+	$(MAKE) examples
+	$(MAKE) run
+
+.PHONY: shell
+shell: $(MODULES_O)
+	$(CC) -o $(SOLUTION_EXE) $(MODULES_O)
+	$(MAKE) clean_o
+
+.PHONY: examples
+examples: $(EXAMPLES_O)
+	for exe in $(EXAMPLES_EXE) ; do \
+		$(CC) -o $$exe $$exe.o ; \
+	done
+	$(MAKE) clean_o
+
+.PHONY: run
+run:
+	./$(SOLUTION_EXE)
+
+%.o: %.c
+	$(CC) $(FLAGS) -c $< -o $@
+
+.PHONY: fmt
+fmt:
+	clang-format -i $(MODULES_C)
+
+.PHONY: clean
+clean: clean_o clean_exe
+
+.PHONY: clean_o
+clean_o:
+	rm -rf *.o
+
+.PHONY: clean_exe
+clean_exe:
+	rm -rf $(SOLUTION_EXE)
+	rm -rf $(EXAMPLES_EXE)
