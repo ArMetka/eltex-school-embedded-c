@@ -4,3 +4,5 @@ ColumnLimit: 110
 UseTab: Never
 PointerAlignment: Right
 AllowShortFunctionsOnASingleLine: None
+ReflowComments: false
+AlignTrailingComments: false
