@@ -1,11 +1,11 @@
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <sys/stat.h>
 #include <unistd.h>
-#include <fcntl.h>
 
 #define BUF_LEN 2048
 #define MAX_ARG_LEN 256
@@ -36,18 +36,18 @@ int main(int argc, char **argv) {
     char ***args;
     pid_t pid;
     int rv = 0;
-    
-    if (argc > 1) { // run from argv (non-interactive mode)
+
+    if (argc > 1) {  // run from argv (non-interactive mode)
         execvp(argv[1], &(argv[1]));
         perror("exec");
         exit(EXIT_FAILURE);
     }
-    
+
     sprintf(shell_prompt, "%s> ", getlogin());
 
     while (1) {
         printf("%s", shell_prompt);
-        
+
         buf[BUF_LEN - 1] = '\n';
         if (!fgets(buf, BUF_LEN, stdin)) {  // EOF
             printf("exit\n");
@@ -57,15 +57,15 @@ int main(int argc, char **argv) {
             fputs("Arguments buffer size exceeded", stderr);
             exit(EXIT_FAILURE);
         }
-        
+
         int fork_count = 0;
         int offset = 0;
         int offset_max = strchr(buf, '\n') - buf;
-        args = (char***)calloc(fork_max, sizeof(char**));
+        args = (char ***)calloc(fork_max, sizeof(char **));
         while ((offset += parseArgs(buf + offset, &(args[fork_count])))) {
             if (++fork_count >= fork_max) {
                 fork_max <<= 1;
-                args = (char***)realloc(args, fork_max * sizeof(char**));
+                args = (char ***)realloc(args, fork_max * sizeof(char **));
             }
             if (++offset >= offset_max) {
                 break;
@@ -85,25 +85,25 @@ int main(int argc, char **argv) {
         int prev_read_pipe_fd = -1;
         for (int i = 0; i < fork_count; i++) {
             int pipe_fd[2];
-            if (i != fork_count - 1) { // if not last
-                if (pipe(pipe_fd)) { // create pipe between current and next process
+            if (i != fork_count - 1) {  // if not last
+                if (pipe(pipe_fd)) {  // create pipe between current and next process
                     perror("pipe");
                     exit(EXIT_FAILURE);
                 }
             }
 
             pid = fork();
-            if (pid == -1) { // error
+            if (pid == -1) {  // error
                 perror("fork");
                 exit(EXIT_FAILURE);
-            } else if (pid == 0) { // child
-                if (prev_read_pipe_fd != -1) { // if not first, read from pipe
-                    dup2(prev_read_pipe_fd, 0); // stdin -> read from pipe
+            } else if (pid == 0) {  // child
+                if (prev_read_pipe_fd != -1) {  // if not first, read from pipe
+                    dup2(prev_read_pipe_fd, 0);  // stdin -> read from pipe
                 }
-                if (i != fork_count - 1) { // if not last, write to pipe
-                    dup2(pipe_fd[1], 1); // stdout -> write to pipe
+                if (i != fork_count - 1) {  // if not last, write to pipe
+                    dup2(pipe_fd[1], 1);  // stdout -> write to pipe
                 }
-                close(pipe_fd[0]); // close read pipe for next process
+                close(pipe_fd[0]);  // close read pipe for next process
 
                 int args_count = 0;
                 char **args_ptr = args[i];
@@ -112,29 +112,29 @@ int main(int argc, char **argv) {
                     args_count++;
                 }
 
-                if (args_count >= 3 && args[i][args_count - 2][0] == '>') { // write to file
+                if (args_count >= 3 && args[i][args_count - 2][0] == '>') {  // write to file
                     int fd = -1;
-                    if (args[i][args_count - 2][1] == '>') { // append, no create (>>)
+                    if (args[i][args_count - 2][1] == '>') {  // append, no create (>>)
                         fd = open(args[i][args_count - 1], O_APPEND | O_WRONLY);
-                    } else { // override / create (>)
+                    } else {  // override / create (>)
                         fd = open(args[i][args_count - 1], O_CREAT | O_WRONLY, FILE_WRITE_MOD);
                     }
                     if (fd == -1) {
                         perror("open");
                         _exit(EXIT_FAILURE);
                     }
-                    dup2(fd, 1); // override stdout
+                    dup2(fd, 1);  // override stdout
                     free(args[i][args_count - 2]);
                     free(args[i][args_count - 1]);
                     args[i][args_count - 2] = NULL;
                     args[i][args_count - 1] = NULL;
-                } else if (args_count >= 3 && args[i][args_count - 2][0] == '<') { // read file
+                } else if (args_count >= 3 && args[i][args_count - 2][0] == '<') {  // read file
                     int fd = open(args[i][args_count - 1], O_RDONLY);
                     if (fd == -1) {
                         perror("open");
                         _exit(EXIT_FAILURE);
                     }
-                    dup2(fd, 0); // override stdin
+                    dup2(fd, 0);  // override stdin
                     free(args[i][args_count - 2]);
                     free(args[i][args_count - 1]);
                     args[i][args_count - 2] = NULL;
@@ -151,37 +151,16 @@ int main(int argc, char **argv) {
                 execvp(args[i][0], args[i]);
                 perror("exec");
                 exit(EXIT_FAILURE);
-            } else { // parent
-                if (prev_read_pipe_fd != -1) { // close read pipe for pre-last process
+            } else {  // parent
+                if (prev_read_pipe_fd != -1) {  // close read pipe for pre-last process
                     close(prev_read_pipe_fd);
                 }
                 prev_read_pipe_fd = pipe_fd[0];
-                close(pipe_fd[1]); // close write pipe for last process
+                close(pipe_fd[1]);  // close write pipe for last process
                 wait(&rv);
                 // printf("\nProcess exited with %d\n", rv);
             }
         }
-
-        // if (args_count == 0) {
-        //     freeArgs(args_count, args);
-        //     continue;
-        // } else if (args_count == 1 && strcmp(args[0], "exit") == 0) {
-        //     freeArgs(args_count, args);
-        //     break;
-        // } else if (args_count == 1 && strcmp(args[0], "?") == 0) {
-        //     printf("%d\n", rv);
-        //     freeArgs(args_count, args);
-        //     continue;
-        // }
-
-        // int pipe_fd[2];
-        // if (pipe(pipe_fd)) {
-        //     perror("pipe");
-        //     exit(EXIT_FAILURE);
-        // }
-
-        // dup2(pipe_fd[1], 1); // stdout -> write to pipe
-        // dup2(pipe_fd[0], 0); // stdin -> read from pipe
 
         for (int i = 0; i < fork_count; i++) {
             freeArgs(args[i]);
@@ -308,7 +287,7 @@ int parseArgs(char *args, char ***result) {
         free((*result)[i]);
         (*result)[i] = NULL;
     }
-    
+
     return offset;
 }
 
