@@ -17,7 +17,6 @@ int fd = -1;
 sig_atomic_t sigint_count = 0;
 
 int main(int argc, char **argv) {
-    printf("pid = %d\n", getpid());
     char filename[MAX_FILENAME_LEN];
 
     if (argc > 1) {
@@ -54,12 +53,11 @@ int main(int argc, char **argv) {
 }
 
 void sigHandler(int signal) {
-    printf("sig = %d, cnt = %d\n", signal, sigint_count);
     if (signal == SIGINT) {
+        sigint_count++;
         if (fd != -1) {
             write(fd, "SIGINT recieved\n", 16);
         }
-        sigint_count++;
     } else if (signal == SIGQUIT) {
         if (fd != -1) {
             write(fd, "SIGQUIT recieved\n", 17);
