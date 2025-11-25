@@ -9,24 +9,23 @@ SERVER_MODULES_O=$(SERVER_MODULES_C:.c=.o)
 SERVER_EXE=server
 LIB_MODULES_C=ipc.c
 LIB_MODULES_O=$(LIB_MODULES_C:.c=.o)
-LIB_NAME=libipc.so
+LIB_NAME=libipc.a
 
 all: clean
 	$(MAKE) lib
 	$(MAKE) server
-	LD_LIBRARY_PATH=$(PWD) ./$(SERVER_EXE)
+	./$(SERVER_EXE)
 
 .PHONY: lib
-lib:
-	$(CC) $(FLAGS) -fPIC -c $(LIB_MODULES_C)
-	$(CC) -shared $(LIB_MODULES_O) -o $(LIB_NAME)
+lib: $(LIB_MODULES_O)
+	ar rcs $(LIB_NAME) $(LIB_MODULES_O)
 
-.PHONY: solution
+.PHONY: server
 server: $(SERVER_MODULES_O) lib
 	$(CC) -o $(SERVER_EXE) $(SERVER_MODULES_O) $(LFLAGS)
 	$(MAKE) clean_o
 
-.PHONY: solution
+.PHONY: client
 client: $(CLIENT_MODULES_O) lib
 	$(CC) -o $(CLIENT_EXE) $(CLIENT_MODULES_O) $(LFLAGS)
 	$(MAKE) clean_o

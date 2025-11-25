@@ -39,7 +39,7 @@ make client
 `./server`
 
 ```shell
-LD_LIBRARY_PATH=$(pwd) ./server
+./server
 ```
 
 > Для корректного завершения необходимо отправить сигнал `SIGINT`
@@ -49,7 +49,7 @@ LD_LIBRARY_PATH=$(pwd) ./server
 `./client CLIENT_ID`
 
 ```shell
-LD_LIBRARY_PATH=$(pwd) ./client 20
+./client 20
 ```
 
 > По умолчанию сообщение отправляется всем клиентам (broadcast), для отправки приватного сообщения необходимо в любую часть сообщения вставить: `:{CLIENT_ID}`
