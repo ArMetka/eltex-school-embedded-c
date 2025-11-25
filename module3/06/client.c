@@ -1,9 +1,9 @@
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 #include <sys/types.h>
-#include <signal.h>
+#include <unistd.h>
 
 #include "./ipc.h"
 
@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
             msq_send(msqid, MSG_DEST_SERVER, client_id, MSG_TYPE_DISCONNECT, "");
             perror("fork");
             exit(EXIT_FAILURE);
-        case 0: // child (listen to messages)
+        case 0:  // child (listen to messages)
             while (1) {
                 msg_buf buf;
                 msq_recv(msqid, client_id, &buf);
@@ -49,7 +49,7 @@ int main(int argc, char **argv) {
                         fprintf(stderr, "unknown message type from %ld", buf.from);
                 }
             }
-        default: // parent (listen to user input)
+        default:  // parent (listen to user input)
             while (1) {
                 char buf[128];
                 char *buf_ptr;
@@ -64,7 +64,7 @@ int main(int argc, char **argv) {
                 if (strcmp(buf, "shutdown") == 0) {
                     break;
                 }
-                
+
                 buf_ptr = strchr(buf, ':');
                 if (!buf_ptr) {
                     msq_send(msqid, MSG_DEST_SERVER, client_id, MSG_TYPE_BROADCAST, buf);

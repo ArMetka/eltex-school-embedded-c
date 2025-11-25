@@ -1,15 +1,16 @@
 #include "./ipc.h"
+
 #include <stdio.h>
+#include <string.h>
 #include <sys/ipc.h>
 #include <sys/msg.h>
 #include <sys/types.h>
-#include <string.h>
 
 int msq_init(int *msqid, int create) {
     key_t key = ftok(FTOK_PATH, 0);
 
     *msqid = msgget(key, ((create) ? (IPC_CREAT) : 0) | 0644);
-    
+
     if (*msqid == -1) {
         perror("msgget");
         return MSQ_FAIL;
