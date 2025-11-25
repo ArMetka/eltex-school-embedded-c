@@ -17,8 +17,8 @@ int main(int argc, char **argv) {
         exit(EXIT_FAILURE);
     }
 
-    int reading = 1; // normal -> read first
-    if (reverse) { // reverse -> write first
+    int reading = 1;  // normal -> read first
+    if (reverse) {  // reverse -> write first
         reading = 0;
     }
 
@@ -52,6 +52,6 @@ int main(int argc, char **argv) {
     if (!reverse) {
         queue_destroy();
     }
-    
+
     exit(EXIT_SUCCESS);
 }

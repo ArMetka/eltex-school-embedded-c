@@ -1,8 +1,9 @@
+#include "./ipc.h"
+
 #include <fcntl.h>
 #include <mqueue.h>
 #include <stdio.h>
 #include <string.h>
-#include "./ipc.h"
 
 int queue_open(mqd_t *mqd0, mqd_t *mqd1, int reverse) {
     struct mq_attr queue_attr;
@@ -16,17 +17,17 @@ int queue_open(mqd_t *mqd0, mqd_t *mqd1, int reverse) {
     } else {
         *mqd0 = mq_open(QUEUE_WRITE, O_CREAT | O_RDONLY, 0644, &queue_attr);
     }
-    if (*mqd0 == (mqd_t) -1) {
+    if (*mqd0 == (mqd_t)-1) {
         perror("mqopen");
         return MQ_FAIL;
     }
-    
+
     if (!reverse) {
         *mqd1 = mq_open(QUEUE_WRITE, O_CREAT | O_WRONLY, 0644, &queue_attr);
     } else {
         *mqd1 = mq_open(QUEUE_READ, O_CREAT | O_WRONLY, 0644, &queue_attr);
     }
-    if (*mqd1 == (mqd_t) -1) {
+    if (*mqd1 == (mqd_t)-1) {
         perror("mqopen");
         return MQ_FAIL;
     }
