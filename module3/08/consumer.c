@@ -50,8 +50,7 @@ int main(int argc, char **argv) {
             FILE *fd = fopen(files[i], "r");
             if (!fd) {
                 sem_post(semaphores[i], 0);
-                perror("open");
-                exit(EXIT_FAILURE);
+                continue;
             }
 
             fseek(fd, offset[i], SEEK_SET);
