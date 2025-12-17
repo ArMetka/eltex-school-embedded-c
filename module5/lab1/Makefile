@@ -1,4 +1,4 @@
-obj-m += k-hello.o
+obj-m += khello.o
 
 all:
 	$(MAKE) modules
@@ -23,3 +23,19 @@ clang:
 .PHONY: clean-clang
 clean-clang:
 	rm -f compile_commands.json
+
+.PHONY: insmod
+insmod:
+	insmod khello.ko
+
+.PHONY: rmmod
+rmmod:
+	rmmod khello
+
+.PHONY: lsmod
+lsmod:
+	lsmod | grep khello -A 3 -B 3 || true
+
+.PHONY: dmesg
+dmesg:
+	dmesg | tail -n 1
