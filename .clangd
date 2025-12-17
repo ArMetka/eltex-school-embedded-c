@@ -1,0 +1,13 @@
+CompileFlags:
+  Add: 
+    - -Wno-unknown-warning-option
+  Remove:
+    - -mpreferred-stack-boundary=*
+    - -mindirect-branch=*
+    - -mindirect-branch-register
+    - -fconserve-stack
+    - -fno-allow-store-data-races
+    - -fzero-init-padding-bits=*
+    - -fmin-function-alignment=*
+    - -mrecord-mcount
+  
