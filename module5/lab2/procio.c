@@ -17,7 +17,7 @@ static char *msg;
 
 static ssize_t read_proc(struct file *filp, char *buf, size_t count, loff_t *offp) {
     if (*offp > 0) {
-        return 0; // EOF
+        return 0;  // EOF
     }
 
     count = (count > len) ? len : count;
@@ -34,7 +34,7 @@ static ssize_t write_proc(struct file *filp, const char *buf, size_t count, loff
     if (copy_from_user(msg, buf, len)) {
         return -EFAULT;
     }
-    
+
     return count;
 }
 
@@ -43,7 +43,7 @@ static const struct proc_ops proc_fops = {
     .proc_write = write_proc,
 };
 
-static void create_new_proc_entry(void) { // use of void for no arguments is compulsory now
+static void create_new_proc_entry(void) {  // use of void for no arguments is compulsory now
     msg = kmalloc(sizeof(char) * MSG_MAX_LEN, GFP_KERNEL);
     proc_create(PROC_FILENAME, 0666, NULL, &proc_fops);
 }
