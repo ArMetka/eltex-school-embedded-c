@@ -10,4 +10,4 @@ CompileFlags:
     - -fzero-init-padding-bits=*
     - -fmin-function-alignment=*
     - -mrecord-mcount
-  
+    - -fsanitize=*
