@@ -1,0 +1,4 @@
+C    192.168.5.0/24 is directly connected, FastEthernet1/0
+     10.0.0.0/24 is subnetted, 1 subnets
+C       10.10.3.0 is directly connected, FastEthernet0/0
+O*IA 0.0.0.0/0 [110/2] via 10.10.3.2, 00:40:37, FastEthernet0/0

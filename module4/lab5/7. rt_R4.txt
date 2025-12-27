@@ -1,0 +1,13 @@
+R    192.168.4.0/24 [120/11] via 10.10.1.2, 00:00:20, FastEthernet1/0
+R    192.168.5.0/24 [120/11] via 10.10.1.2, 00:00:20, FastEthernet1/0
+     10.0.0.0/24 is subnetted, 7 subnets
+C       10.10.1.0 is directly connected, FastEthernet1/0
+R       10.10.2.0 [120/1] via 10.10.1.2, 00:00:20, FastEthernet1/0
+R       10.10.3.0 [120/11] via 10.10.1.2, 00:00:20, FastEthernet1/0
+R       10.10.4.0 [120/11] via 10.10.1.2, 00:00:20, FastEthernet1/0
+R       10.10.5.0 [120/11] via 10.10.1.2, 00:00:20, FastEthernet1/0
+R       10.10.6.0 [120/11] via 10.10.1.2, 00:00:22, FastEthernet1/0
+R       10.10.10.0 [120/2] via 10.10.1.2, 00:00:22, FastEthernet1/0
+C    192.168.1.0/24 is directly connected, FastEthernet0/0
+R    192.168.2.0/24 [120/1] via 10.10.1.2, 00:00:22, FastEthernet1/0
+R    192.168.3.0/24 [120/11] via 10.10.1.2, 00:00:22, FastEthernet1/0
