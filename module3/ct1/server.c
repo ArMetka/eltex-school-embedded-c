@@ -33,7 +33,6 @@ int main(int argc, char **argv) {
     int sock_in, sock_out;
     int port;
     struct client_list *head = NULL;
-    int client_count = 0;
 
     if (argc < 2) {
         fprintf(stderr, "No port found in argv\n%s\n", USAGE_PROMPT);
