@@ -55,6 +55,6 @@ make driver
 
 ![img3](img/3.png)
 
-Структура файлов в `/tmp`
+Именованные каналы в `/tmp`
 
 ![img4](img/4.png)
